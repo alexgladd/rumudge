@@ -19,9 +19,8 @@
 ##
 ## main entry point for the game
 ##
-## run me with ruby -Ilib main.rb
-##
 
+# ensure we're using dev code
 require_relative 'lib/rumudge'
 
 Log.a('Main', 'Starting RuMUDGE server...')

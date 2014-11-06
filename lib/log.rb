@@ -20,27 +20,27 @@
 
 class Log
   def self.d(tag, msg)
-    self.log(:debug, tag, msg)
+    Log.log(:debug, tag, msg)
   end
 
   def self.i(tag, msg)
-    self.log(:info, tag, msg)
+    Log.log(:info, tag, msg)
   end
 
   def self.w(tag, msg)
-    self.log(:warn, tag, msg)
+    Log.log(:warn, tag, msg)
   end
 
   def self.e(tag, msg)
-    self.log(:error, tag, msg)
+    Log.log(:error, tag, msg)
   end
 
   def self.f(tag, msg)
-    self.log(:fatal, tag, msg)
+    Log.log(:fatal, tag, msg)
   end
 
   def self.a(tag, msg)
-    self.log(:unknown, tag, msg)
+    Log.log(:unknown, tag, msg)
   end
 
   private

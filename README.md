@@ -1,5 +1,5 @@
 # RuMUDGE
 
-*Pronounced like "rumamge"*
+*Pronounced like "rummage"*
 
-A ***Ru***by ***MUD*** ***G***ame ***E***ngine
+A Ruby MUD Game Engine

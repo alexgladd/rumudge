@@ -20,38 +20,61 @@
 
 require 'logger'
 
-class Rumudge::Environment
-  @@current = :development
-  @@logger = Logger.new(STDOUT)
+module Rumudge
+  class Environment
+    DEVELOPMENT = :development
+    PRODUCTION = :production
 
-  def self.is_production?
-    @@current == :production
-  end
+    def initialize(env = DEVELOPMENT, logger = Logger.new(STDOUT))
+      @env = env
+      @logger = logger
 
-  def self.is_development?
-    @@current == :development
-  end
-
-  def self.production
-    @@current = :production
-
-    # log level to warn
-    @@logger.level = Logger::WARN
-  end
-
-  def self.logger
-    @@logger
-  end
-
-  def self.logger=(logger)
-    unless logger.is_a? Logger
-      raise ArgumentError, 'Argument must be a Logger object'
+      setup
     end
 
-    @@logger = logger
-
-    if self.is_production?
-      @@logger.level = Logger::WARN
+    def logger
+      @logger
     end
+
+    def logger=(logger)
+      unless logger.is_a? Logger
+        raise ArgumentError, 'Argument must be a Logger object'
+      end
+
+      @logger = logger
+
+      setup
+    end
+
+    def is_production?
+      @env == PRODUCTION
+    end
+
+    def is_development?
+      @env == DEVELOPMENT
+    end
+
+    private
+
+    def setup
+      if is_production?
+        @logger.level = Logger::WARN
+      end
+    end
+  end
+
+  # our environment
+  @@env = Rumudge::Environment.new
+
+  def self.environment
+    @@env
+  end
+
+  def self.environment=(env)
+    unless env.is_a? Rumudge::Environment
+      raise ArgumentError, 'Argument must be a Rumudge::Environment object'
+    end
+
+    @@env = env
   end
 end

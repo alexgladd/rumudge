@@ -24,12 +24,10 @@ class Rumudge::Server
   TAG = 'Server'
 
   # constructor
-  def initialize(addr = '0.0.0.0', port = 4323, options = { env: :development })
+  def initialize(addr = '0.0.0.0', port = 4323)
     @addr = addr
     @port = port
     @client_pool = []
-    
-    set_environment(options[:env])
   end
 
   # start the server
@@ -73,14 +71,5 @@ class Rumudge::Server
     acceptor.join
 
     Log.a(TAG, 'Server shutdown')
-  end
-
-  private
-
-  def set_environment(env)
-    if env.to_s.upcase == 'PROD' || env.to_s.upcase == 'PRODUCTION'
-      Log.i(TAG, 'Setting environment to production')
-      Rumudge::Environment.production
-    end
   end
 end

@@ -46,7 +46,7 @@ class Log
   private
 
   def self.log(method = :info, tag = 'NONE', msg = '')
-    logger = Rumudge::Environment.logger
+    logger = Rumudge.environment.logger
 
     begin
       lm = logger.method(method)

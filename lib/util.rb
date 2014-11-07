@@ -15,11 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##
-## the rumudge api
+## utility stuff
 ##
 
-require_relative 'util'
-require_relative 'env'
-require_relative 'log'
-require_relative 'net/server'
-require_relative 'net/session'
+

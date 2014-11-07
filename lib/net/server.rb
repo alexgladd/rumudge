@@ -21,6 +21,15 @@
 require 'socket'
 
 class Rumudge::Server
+  # used for system-wide interrupts
+  class Interrupt < ::Interrupt
+    attr_reader :for_client
+    def initialize(for_client = nil)
+      super(2)
+      @for_client = for_client
+    end
+  end
+
   TAG = 'Server'
 
   # constructor
@@ -36,7 +45,7 @@ class Rumudge::Server
 
     # start new thread for the accept loop
     acceptor = Thread.new do
-      Log.a(TAG, 'Server started')
+      Log.a(TAG, "Server started => #{@addr}:#{@port}")
       server = TCPServer.new(@addr, @port)
 
       while @run
@@ -46,9 +55,9 @@ class Rumudge::Server
           Log.a(TAG, "New client connection from #{sock.peeraddr[-1]}")
 
           # TODO use the new socket
-          sleep 1
-          sock.close_read
-          sock.close_write
+          session = Rumudge::Session.new(sock)
+          session.start
+          @client_pool << session
         rescue IO::WaitReadable, Errno::EINTR
           IO.select([server], nil, nil, 0.5)
         end
@@ -63,7 +72,7 @@ class Rumudge::Server
       while @run
         sleep 1
       end
-    rescue Interrupt
+    rescue ::Interrupt
       Log.a(TAG, 'Starting shutdown...')
     end
 

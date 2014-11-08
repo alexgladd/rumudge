@@ -15,13 +15,40 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##
-## the rumudge api
+## basic default controller
 ##
 
-require_relative 'util'
-require_relative 'env'
-require_relative 'log'
-require_relative 'net/server'
-require_relative 'net/session'
-require_relative 'mud/ctrl/controller'
-require_relative 'mud/ctrl/default_controller'
+class Rumudge::DefaultController < Rumudge::Controller
+  TAG = 'DefaultController'
+
+  # before_start :cb_1
+  # before_command :cb_2
+  # after_command :cb_3
+  # before_stop :cb_4
+
+  def initialize
+    super
+  end
+
+  def process_command
+    @response = "Received command='#{command}' params=[#{params.join(', ')}]\n"
+  end
+
+  private
+
+  def cb_1
+    Log.d(TAG, "#{self} Exec callback 1")
+  end
+
+  def cb_2
+    Log.d(TAG, "#{self} Exec callback 2")
+  end
+
+  def cb_3
+    Log.d(TAG, "#{self} Exec callback 3")
+  end
+
+  def cb_4
+    Log.d(TAG, "#{self} Exec callback 4")
+  end
+end

@@ -22,9 +22,13 @@ class Rumudge::Session
 
   attr_reader :remote_addr
 
-  def initialize(socket, close_callback = nil)
+  def initialize(socket, close_callback = nil, init_controller = Rumudge::DefaultController)
     unless socket.is_a? IPSocket
       raise ArgumentError, 'Argument must be a IPSocket object'
+    end
+
+    unless init_controller.is_a? Class
+      raise ArgumentError, 'Argument must be a Rumudge::Controller class'
     end
 
     @close_cb = close_callback
@@ -33,6 +37,7 @@ class Rumudge::Session
     @socket_lock = Mutex.new
     @run = false
     @run_lock = Mutex.new
+    @controller = init_controller.new
   end
 
   def read
@@ -140,8 +145,9 @@ class Rumudge::Session
             # don't burn CPU
             sleep 0.25
           else
-            # TODO
+            # send input to the controller and write back the response
             Log.d(TAG, "Processing command '#{command}'")
+            write @controller.action(command)
           end
 
         rescue Rumudge::Server::Interrupt => i

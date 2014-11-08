@@ -15,13 +15,27 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##
-## the rumudge api
+## controller callbacks
 ##
 
-require_relative 'util'
-require_relative 'env'
-require_relative 'log'
-require_relative 'net/server'
-require_relative 'net/session'
-require_relative 'mud/ctrl/controller'
-require_relative 'mud/ctrl/default_controller'
+module Rumudge::ControllerCallbacks
+  # set callbacks for controller startup
+  def before_start(*callbacks)
+    @cb_on_start.replace(callbacks) unless callbacks.nil?
+  end
+
+  # set callbacks for before processing command
+  def before_command(*callbacks)
+    @cb_before_cmd.replace(callbacks) unless callbacks.nil?
+  end
+
+  # set callbacks for after command processing (before response to client)
+  def after_command(*callbacks)
+    @cb_after_cmd.replace(callbacks) unless callbacks.nil?
+  end
+
+  # set callbacks for controller shutdown
+  def before_stop(*callbacks)
+    @cb_on_stop.replace(callbacks) unless callbacks.nil?
+  end
+end

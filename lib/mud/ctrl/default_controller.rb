@@ -26,15 +26,23 @@ class Rumudge::DefaultController < Rumudge::Controller
   after_command :cb_3
   before_stop :cb_4
 
+  permitted_commands :quit
+
   def initialize
     super
   end
 
-  def process_command
-    @response = "Received command='#{command}' params=[#{params.join(', ')}]\n"
-  end
+  # def process_command
+  #   @response = "Received command='#{command}' params=[#{params.join(', ')}]\n"
+  # end
 
   private
+
+  def quit
+    Log.d(TAG, 'Client requested quit!')
+    @response = "Goodbye!\n"
+    finish
+  end
 
   def cb_1
     Log.d(TAG, 'Exec callback 1')

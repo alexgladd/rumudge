@@ -150,6 +150,17 @@ class Rumudge::Session
             write @controller.action(command)
           end
 
+          if @controller.finished?
+            Log.i(TAG, 'Current controller is finished')
+
+            if @controller.next_controller.nil?
+              Log.d(TAG, 'Next controller is nil; stopping session')
+              stop
+            else
+              @controller = @controller.next_controller.new
+            end
+          end
+
         rescue Rumudge::Server::Interrupt => i
           # handle interrupts from the server
           Log.i(TAG, "Caught server interrupt in #{Thread.current}")

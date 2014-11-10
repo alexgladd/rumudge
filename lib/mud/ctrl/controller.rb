@@ -21,7 +21,7 @@
 class Rumudge::Controller
   TAG = 'BaseController'
 
-  attr_reader :next_ctrl
+  attr_reader :next_controller
 
   def initialize
     # unless session.is_a? Rumudge::Session
@@ -36,7 +36,7 @@ class Rumudge::Controller
     @response = nil
 
     @finished = false
-    @next_ctrl = nil
+    @next_controller = nil
 
     # callbacks on start
     run_callbacks __cb_on_start
@@ -57,7 +57,11 @@ class Rumudge::Controller
     run_callbacks __cb_before_cmd
 
     # do the command
-    process_command
+    if command_valid
+      process_command
+    else
+      Log.e(TAG, "#{self} Invalid command received: #{@command}")
+    end
 
     # callbacks after the command
     run_callbacks __cb_after_cmd
@@ -66,8 +70,13 @@ class Rumudge::Controller
     @response
   end
 
-  # process the command and set the response (subclasses should override)
+  # process the command and set the response (subclasses may override)
   def process_command
+    if self.respond_to? @command, true
+      self.send @command
+    else
+      Log.e(TAG, "#{self} Cannot process command: #{@command}")
+    end
   end
 
   def finished?
@@ -90,12 +99,14 @@ class Rumudge::Controller
 
   # signal that this controller should be terminated
   def finish(next_ctrl = nil)
-    unless next_ctrl.is_a? Class
-      raise ArgumentError, 'Argument must be a Rumudge::Controller class'
+    unless next_ctrl.nil?
+      unless next_ctrl.is_a?(Class)
+        raise ArgumentError, 'Argument must be a Rumudge::Controller class'
+      end
     end
 
     @finished = true
-    @next_ctrl = next_ctrl
+    @next_controller = next_ctrl
 
     # callbacks on stop
     run_callbacks __cb_on_stop
@@ -121,6 +132,24 @@ class Rumudge::Controller
         self.send cb
       end
     end
+  end
+
+  # command filtering
+
+  def command_valid
+    false unless __commands_filter.index { |c| c.to_s == @command.to_s } != nil
+    true
+  end
+
+  # list of commands accepted by this controller
+  # subclasses should override
+  def __commands_filter
+    []
+  end
+
+  # set the list of commands this controller should accept
+  def self.permitted_commands(*commands)
+    class_eval("def __commands_filter; #{commands.to_s}; end") unless commands.nil?
   end
 
   # callbacks

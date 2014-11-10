@@ -21,8 +21,6 @@
 class Rumudge::Controller
   TAG = 'BaseController'
 
-  # include Rumudge::ControllerCallbacks
-
   attr_reader :next_ctrl
 
   def initialize
@@ -31,11 +29,6 @@ class Rumudge::Controller
     # end
 
     # @session = session
-
-    @cb_on_start = []
-    @cb_before_cmd = []
-    @cb_after_cmd = []
-    @cb_on_stop = []
 
     @command = nil
     @params = nil
@@ -46,7 +39,7 @@ class Rumudge::Controller
     @next_ctrl = nil
 
     # callbacks on start
-    run_callbacks @cb_on_start
+    run_callbacks __cb_on_start
   end
 
   # start a round of processing in the controller
@@ -61,13 +54,13 @@ class Rumudge::Controller
     parse_input input
 
     # callbacks before command
-    run_callbacks @cb_before_cmd
+    run_callbacks __cb_before_cmd
 
     # do the command
     process_command
 
     # callbacks after the command
-    run_callbacks @cb_after_cmd
+    run_callbacks __cb_after_cmd
 
     Log.d(TAG, "#{self} Finished action with response='#{@response}'")
     @response
@@ -79,26 +72,6 @@ class Rumudge::Controller
 
   def finished?
     @finished
-  end
-
-  # set callbacks for controller startup
-  def before_start(*callbacks)
-    @cb_on_start.replace(callbacks) unless callbacks.nil?
-  end
-
-  # set callbacks for before processing command
-  def before_command(*callbacks)
-    @cb_before_cmd.replace(callbacks) unless callbacks.nil?
-  end
-
-  # set callbacks for after command processing (before response to client)
-  def after_command(*callbacks)
-    @cb_after_cmd.replace(callbacks) unless callbacks.nil?
-  end
-
-  # set callbacks for controller shutdown
-  def before_stop(*callbacks)
-    @cb_on_stop.replace(callbacks) unless callbacks.nil?
   end
 
   private
@@ -117,7 +90,7 @@ class Rumudge::Controller
 
   # signal that this controller should be terminated
   def finish(next_ctrl = nil)
-    unless next_ctrl.ia_a? Class
+    unless next_ctrl.is_a? Class
       raise ArgumentError, 'Argument must be a Rumudge::Controller class'
     end
 
@@ -125,7 +98,7 @@ class Rumudge::Controller
     @next_ctrl = next_ctrl
 
     # callbacks on stop
-    run_callbacks @cb_on_stop
+    run_callbacks __cb_on_stop
   end
 
   def parse_input(input)
@@ -140,11 +113,49 @@ class Rumudge::Controller
   end
 
   def run_callbacks(cb_list = [])
+    return if cb_list.nil?
+
     # call each callback if it exists
     cb_list.each do |cb|
-      if self.respond_to? cb
+      if self.respond_to? cb, true
         self.send cb
       end
     end
   end
+
+  # callbacks
+
+  def __cb_on_start
+    []
+  end
+  def __cb_before_cmd
+    []
+  end
+  def __cb_after_cmd
+    []
+  end
+  def __cb_on_stop
+    []
+  end
+
+  # set callbacks for controller startup
+  def self.before_start(*callbacks)
+    class_eval("def __cb_on_start; #{callbacks.to_s}; end") unless callbacks.nil?
+  end
+
+  # set callbacks for before processing command
+  def self.before_command(*callbacks)
+    class_eval("def __cb_before_cmd; #{callbacks.to_s}; end") unless callbacks.nil?
+  end
+
+  # set callbacks for after command processing (before response to client)
+  def self.after_command(*callbacks)
+    class_eval("def __cb_after_cmd; #{callbacks.to_s}; end") unless callbacks.nil?
+  end
+
+  # set callbacks for controller shutdown
+  def self.before_stop(*callbacks)
+    class_eval("def __cb_on_stop; #{callbacks.to_s}; end") unless callbacks.nil?
+  end
+
 end

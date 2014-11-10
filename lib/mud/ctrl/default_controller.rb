@@ -21,10 +21,10 @@
 class Rumudge::DefaultController < Rumudge::Controller
   TAG = 'DefaultController'
 
-  # before_start :cb_1
-  # before_command :cb_2
-  # after_command :cb_3
-  # before_stop :cb_4
+  before_start :cb_1
+  before_command :cb_2
+  after_command :cb_3
+  before_stop :cb_4
 
   def initialize
     super
@@ -37,18 +37,18 @@ class Rumudge::DefaultController < Rumudge::Controller
   private
 
   def cb_1
-    Log.d(TAG, "#{self} Exec callback 1")
+    Log.d(TAG, 'Exec callback 1')
   end
 
   def cb_2
-    Log.d(TAG, "#{self} Exec callback 2")
+    Log.d(TAG, 'Exec callback 2')
   end
 
   def cb_3
-    Log.d(TAG, "#{self} Exec callback 3")
+    Log.d(TAG, 'Exec callback 3')
   end
 
   def cb_4
-    Log.d(TAG, "#{self} Exec callback 4")
+    Log.d(TAG, 'Exec callback 4')
   end
 end

@@ -1,5 +1,6 @@
 # git ignore
 
 /.idea/
+/projectFilesBackup
 
 *.gem

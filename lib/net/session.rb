@@ -37,7 +37,7 @@ class Rumudge::Session
     @socket_lock = Mutex.new
     @run = false
     @run_lock = Mutex.new
-    @controller = init_controller.new
+    @controller = init_controller.new(self)
   end
 
   def read
@@ -157,7 +157,7 @@ class Rumudge::Session
               Log.d(TAG, 'Next controller is nil; stopping session')
               stop
             else
-              @controller = @controller.next_controller.new
+              @controller = @controller.next_controller.new(self)
             end
           end
 

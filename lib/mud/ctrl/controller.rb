@@ -23,12 +23,12 @@ class Rumudge::Controller
 
   attr_reader :next_controller
 
-  def initialize
-    # unless session.is_a? Rumudge::Session
-    #   raise ArgumentError, 'Argument must be a Rumudge::Session object'
-    # end
+  def initialize(session)
+    unless session.is_a? Rumudge::Session
+      raise ArgumentError, 'Argument must be a Rumudge::Session object'
+    end
 
-    # @session = session
+    @session = session
 
     @command = nil
     @params = nil
@@ -37,6 +37,8 @@ class Rumudge::Controller
 
     @finished = false
     @next_controller = nil
+
+    @handler = nil
 
     # callbacks on start
     run_callbacks __cb_on_start
@@ -47,8 +49,9 @@ class Rumudge::Controller
   def action(input = nil)
     Log.d(TAG, "#{self} Beginning action with input=#{input.to_s}")
 
-    # clear response
+    # clear state
     @response = nil
+    @handler = nil
 
     # parse the input
     parse_input input
@@ -57,11 +60,7 @@ class Rumudge::Controller
     run_callbacks __cb_before_cmd
 
     # do the command
-    if command_valid
-      process_command
-    else
-      Log.e(TAG, "#{self} Invalid command received: #{@command}")
-    end
+    process_command
 
     # callbacks after the command
     run_callbacks __cb_after_cmd
@@ -72,10 +71,16 @@ class Rumudge::Controller
 
   # process the command and set the response (subclasses may override)
   def process_command
-    if self.respond_to? @command, true
-      self.send @command
-    else
-      Log.e(TAG, "#{self} Cannot process command: #{@command}")
+    begin
+      if listed_command?
+        self.send command
+      elsif matched_command?
+        self.send __command_match[:method]
+      else
+        Log.i(TAG, "#{self} Unrecognized command: #{command}")
+      end
+    rescue NoMethodError => e
+      Log.e(TAG, "#{self} Cannot process command: #{e.message}")
     end
   end
 
@@ -84,6 +89,10 @@ class Rumudge::Controller
   end
 
   private
+
+  def session
+    @session
+  end
 
   def command
     @command
@@ -130,26 +139,53 @@ class Rumudge::Controller
     cb_list.each do |cb|
       if self.respond_to? cb, true
         self.send cb
+      else
+        Log.w(TAG, "#{self} Skipping callback '#{cb}': no method")
       end
     end
   end
 
   # command filtering
 
-  def command_valid
-    false unless __commands_filter.index { |c| c.to_s == @command.to_s } != nil
-    true
+  def listed_command?
+    if __command_list.index { |c| c.to_s == command.to_s } != nil
+      true
+    else
+      false
+    end
+  end
+
+  def matched_command?
+    if __command_match[:re] != nil && __command_match[:re].match(command.to_s) != nil
+      true
+    else
+      false
+    end
   end
 
   # list of commands accepted by this controller
   # subclasses should override
-  def __commands_filter
+  def __command_list
     []
   end
 
   # set the list of commands this controller should accept
   def self.permitted_commands(*commands)
-    class_eval("def __commands_filter; #{commands.to_s}; end") unless commands.nil?
+    class_eval("def __command_list; #{commands.to_s}; end") unless commands.nil?
+  end
+
+  # command matching hash { re: command-regex, method: symbol }
+  def __command_match
+    { re: nil, method: nil }
+  end
+
+  # setup the command matching
+  def self.match_commands(regex, method)
+    unless regex.is_a? Regexp
+      raise ArgumentError, 'Argument must be a regular expression'
+    end
+
+    class_eval("def __command_match; { re: /#{regex.source}/, method: :#{method.to_s} }; end")
   end
 
   # callbacks

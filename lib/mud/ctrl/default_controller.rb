@@ -21,20 +21,22 @@
 class Rumudge::DefaultController < Rumudge::Controller
   TAG = 'DefaultController'
 
-  before_start :cb_1
+  # Setup the controller with rails-style callbacks
+
+  # This is how we setup lifecycle callbacks
+  # Use comma-separated list of symbols that correspond to methods
+  before_start :welcome
   before_command :cb_2
   after_command :cb_3
   before_stop :cb_4
 
+  # Define a list of commands that the controller can respond to
+  # Use a comma-separated list of symbols that correspond to methods
   permitted_commands :quit
 
-  def initialize
-    super
-  end
-
-  # def process_command
-  #   @response = "Received command='#{command}' params=[#{params.join(', ')}]\n"
-  # end
+  # Use a regular expression to match command(s)
+  # The second parameter should be a symbol that corresponds to a method
+  match_commands /.+/, :catch_all
 
   private
 
@@ -44,8 +46,14 @@ class Rumudge::DefaultController < Rumudge::Controller
     finish
   end
 
-  def cb_1
-    Log.d(TAG, 'Exec callback 1')
+  def catch_all
+    Log.d(TAG, "Processing '#{command}' in catch-all")
+    @response = "Received command='#{command}' params=[#{params.join(', ')}]\n\n> "
+  end
+
+  def welcome
+    Log.d(TAG, 'Exec welcome callback')
+    session.write "\nWelcome to the default controller!\nEnter 'quit' to disconnect!\n\n> "
   end
 
   def cb_2

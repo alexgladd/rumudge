@@ -22,8 +22,13 @@
 
 # ensure we're using dev code
 require_relative '../lib/rumudge'
+require_relative 'test_controller'
 
-Log.a('Main', 'Starting TEST RuMUDGE server...')
+Log.a('Test Main', 'Setting up environment')
+
+Rumudge.environment.startup_ctrl = TestController
+
+Log.a('Test Main', 'Starting TEST RuMUDGE server...')
 
 server = Rumudge::Server.new()
 

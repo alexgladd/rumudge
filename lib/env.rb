@@ -28,6 +28,7 @@ module Rumudge
     def initialize(env = DEVELOPMENT, logger = Logger.new(STDOUT))
       @env = env
       @logger = logger
+      @first_ctrl = nil
 
       setup
     end
@@ -52,6 +53,18 @@ module Rumudge
 
     def is_development?
       @env == DEVELOPMENT
+    end
+
+    def startup_ctrl
+      @first_ctrl
+    end
+
+    def startup_ctrl=(controller)
+      if controller.is_a? Class
+        @first_ctrl = controller
+      else
+        raise ArgumentError, 'Argument must be a Rumudge::Controller class'
+      end
     end
 
     private

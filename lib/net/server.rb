@@ -108,7 +108,7 @@ class Rumudge::Server
           Log.i(TAG, "New client connection from #{sock.peeraddr[-1]}")
 
           # TODO use the new socket
-          session = Rumudge::Session.new(sock, self)
+          session = Rumudge::Session.new(sock, Rumudge.environment.startup_ctrl, self)
           session.start
 
           @client_pool_lock.synchronize {

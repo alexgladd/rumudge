@@ -22,7 +22,7 @@ class Rumudge::Session
 
   attr_reader :remote_addr
 
-  def initialize(socket, close_callback = nil, init_controller = Rumudge::DefaultController)
+  def initialize(socket, init_controller, close_callback = nil)
     unless socket.is_a? IPSocket
       raise ArgumentError, 'Argument must be a IPSocket object'
     end

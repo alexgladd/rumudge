@@ -26,9 +26,6 @@ class Rumudge::DefaultController < Rumudge::Controller
   # This is how we setup lifecycle callbacks
   # Use comma-separated list of symbols that correspond to methods
   before_start :welcome
-  before_command :cb_2
-  after_command :cb_3
-  before_stop :cb_4
 
   # Define a list of commands that the controller can respond to
   # Use a comma-separated list of symbols that correspond to methods
@@ -54,17 +51,5 @@ class Rumudge::DefaultController < Rumudge::Controller
   def welcome
     Log.d(TAG, 'Exec welcome callback')
     session.write "\nWelcome to the default controller!\nEnter 'quit' to disconnect!\n\n> "
-  end
-
-  def cb_2
-    Log.d(TAG, 'Exec callback 2')
-  end
-
-  def cb_3
-    Log.d(TAG, 'Exec callback 3')
-  end
-
-  def cb_4
-    Log.d(TAG, 'Exec callback 4')
   end
 end

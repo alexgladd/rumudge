@@ -21,9 +21,9 @@
 ##
 
 # ensure we're using dev code
-require_relative 'lib/rumudge'
+require_relative '../lib/rumudge'
 
-Log.a('Main', 'Starting RuMUDGE server...')
+Log.a('Main', 'Starting TEST RuMUDGE server...')
 
 server = Rumudge::Server.new()
 

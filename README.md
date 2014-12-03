@@ -28,7 +28,7 @@ class MyController < Rumudge::Controller
   def quit
     self.response = "Goodbye!\n"
 
-    # call finish to signal that you're done
+    # call finish to signal that the controller should terminate
     finish
   end
 end

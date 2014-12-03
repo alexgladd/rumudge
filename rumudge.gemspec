@@ -1,8 +1,8 @@
 # gem specification for rumudge
 Gem::Specification.new do |s|
   s.name        = 'rumudge'
-  s.version     = '0.1.0'
-  s.date        = '2014-11-06'
+  s.version     = '0.0.0'
+  s.date        = '2014-12-02'
   s.summary     = 'A Ruby MUD game engine'
   s.description = 'A framework for building a MUD with Ruby'
   s.authors     = ['Alex Gladd']

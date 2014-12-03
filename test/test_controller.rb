@@ -18,6 +18,9 @@
 ## test controller
 ##
 
+# ensure we're using dev code
+require_relative '../lib/rumudge'
+
 class TestController < Rumudge::Controller
   TAG = 'TestController'
 
@@ -68,3 +71,15 @@ class TestController < Rumudge::Controller
     Log.d(TAG, 'Callback: controller stopping')
   end
 end
+
+
+# Run the test controller
+Log.a('Test Main', 'Setting up environment')
+
+Rumudge.environment.startup_ctrl = TestController
+
+Log.a('Test Main', 'Starting TEST RuMUDGE server...')
+
+server = Rumudge::Server.new()
+
+server.start

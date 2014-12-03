@@ -45,13 +45,13 @@ class TestController < Rumudge::Controller
 
   def quit
     Log.d(TAG, 'Client requested quit!')
-    @response = "Goodbye!\n"
+    self.response = "Goodbye!\n"
     finish
   end
 
   def catch_all
     Log.d(TAG, "Processing '#{command}' in catch-all")
-    @response = "Received command='#{command}' params=[#{params.join(', ')}]\n\n> "
+    self.response = "Received command='#{command}' params=[#{params.join(', ')}]\n\n> "
   end
 
   def welcome

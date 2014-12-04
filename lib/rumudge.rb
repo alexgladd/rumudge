@@ -23,8 +23,8 @@ require_relative 'env'
 require_relative 'log'
 require_relative 'net/server'
 require_relative 'net/session'
-require_relative 'mud/ctrl/controller'
-require_relative 'mud/ctrl/default_controller'
+require_relative 'ctrl/controller'
+require_relative 'ctrl/default_controller'
 
 # init the startup controller
 Rumudge.environment.startup_ctrl = Rumudge::DefaultController

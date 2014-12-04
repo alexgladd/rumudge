@@ -18,4 +18,6 @@
 ## utility stuff
 ##
 
-
+# generic rumudge errors
+class RumudgeError < StandardError
+end

@@ -21,15 +21,6 @@
 require 'socket'
 
 class Rumudge::Server
-  # used for system-wide interrupts
-  class Interrupt < ::Interrupt
-    attr_reader :for_client
-    def initialize(for_client = nil)
-      super(2)
-      @for_client = for_client
-    end
-  end
-
   TAG = 'Server'
 
   # constructor

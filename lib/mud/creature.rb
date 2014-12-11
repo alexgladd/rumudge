@@ -15,15 +15,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ##
-## base game entity
-## all objects in the MUD should inherit from this
+## base game creature (players, enemies, npcs, etc)
 ##
 
-class Rumudge::Entity
-  attr_reader :id
+class Rumudge::Creature < Rumudge::Entity
+  attr_reader :name
 
   # constructor
-  def initialize(id)
-    @id = id
+  def initialize(id, name = nil, options = {})
+    super(id)
+
+    @name = name
+    @abilities = { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 }
+  end
+
+  private
+
+  # parse incoming options
+  def parse_options(options = {})
+
   end
 end

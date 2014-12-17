@@ -19,20 +19,41 @@
 ##
 
 class Rumudge::Creature < Rumudge::Entity
+  ABILITY_NAMES = [ :str, :dex, :con, :int, :wis, :cha ]
+  STAT_HP = :hp
+
   attr_reader :name
 
   # constructor
-  def initialize(id, name = nil, options = {})
+  def initialize(id, name = 'Creature', options = {})
     super(id)
 
     @name = name
-    @abilities = { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 }
+
+    @abilities = {}
+    ABILITY_NAMES.each do |a|
+      @abilities[a] = 1
+    end
+
+    @hp = 1
+
+    self.parse_options(options)
   end
 
   private
 
   # parse incoming options
   def parse_options(options = {})
+    # try abilities
+    ABILITY_NAMES.each do |ability|
+      if options.has_key? ability
+        @abilities[ability] = options[ability]
+      end
+    end
 
+    # stats
+    if options.has_key? STAT_HP
+      @hp = options[STAT_HP]
+    end
   end
 end

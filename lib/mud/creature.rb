@@ -19,8 +19,9 @@
 ##
 
 class Rumudge::Creature < Rumudge::Entity
-  ABILITY_NAMES = [ :str, :dex, :con, :int, :wis, :cha ]
-  STAT_HP = :hp
+  DEFAULT_ABILITIES = { :str = 1, :dex = 1, :con = 1, :int = 1, :wis = 1, :cha = 1 }
+  DEFAULT_STATS = { :hp = 1 }
+  DEFAULT_OPTIONS = { :hitd = '1d6' }
 
   attr_reader :name
 
@@ -30,30 +31,36 @@ class Rumudge::Creature < Rumudge::Entity
 
     @name = name
 
-    @abilities = {}
-    ABILITY_NAMES.each do |a|
-      @abilities[a] = 1
-    end
+    @abilities = self.parse_options(DEFAULT_ABILITIES, options)
+    @stats = self.parse_options(DEFAULT_STATS, options)
+    @options = self.parse_options(DEFAULT_OPTIONS, options)
+  end
 
-    @hp = 1
-
-    self.parse_options(options)
+  # ability check
+  def ability_check(ability)
+    
   end
 
   private
 
-  # parse incoming options
-  def parse_options(options = {})
-    # try abilities
-    ABILITY_NAMES.each do |ability|
-      if options.has_key? ability
-        @abilities[ability] = options[ability]
-      end
-    end
+  # filter incoming options with the given filter hash and return a hash of
+  # filtered options
+  def parse_options(filter, options = {})
+    # filter options
+    filtered = options.select { |key, v| filter.include? key }
+    # merge and return results
+    filter.merge(filtered)
 
-    # stats
-    if options.has_key? STAT_HP
-      @hp = options[STAT_HP]
-    end
+    # # try abilities
+    # ABILITY_NAMES.each do |ability|
+    #   if options.has_key? ability
+    #     @abilities[ability] = options[ability]
+    #   end
+    # end
+
+    # # stats
+    # if options.has_key? STAT_HP
+    #   @hp = options[STAT_HP]
+    # end
   end
 end

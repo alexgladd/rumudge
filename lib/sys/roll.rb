@@ -21,19 +21,27 @@
 require 'securerandom'
 
 class Roll
+  attr_reader :sides
+
   # contructor
   def initialize(num = 1, sides = 6)
     unless num > 0 && sides > 0
       raise ArgumentError, 'Num and Sides must be greater than or equal to 1'
     end
 
+    @sides = sides
     @rolls = []
 
     num.times do
-      @rolls << SecureRandom.random_number(sides) + 1
+      @rolls << SecureRandom.random_number(@sides) + 1
     end
 
     @sum = @rolls.reduce(:+)
+  end
+
+  # get the number of dice rolled
+  def num_rolls
+    @rolls.length
   end
 
   # represent the roll as a string

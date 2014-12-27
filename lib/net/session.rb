@@ -138,7 +138,7 @@ class Rumudge::Session
           end
 
           # try to read
-          command = read
+          command = self.read
 
           # wait on input from the client
           if command.nil?
@@ -147,7 +147,7 @@ class Rumudge::Session
           else
             # send input to the controller and write back the response
             Log.d(TAG, "Processing command '#{command}'")
-            write @controller.action(command)
+            self.write @controller.action(command)
           end
 
           if @controller.finished?
@@ -164,7 +164,7 @@ class Rumudge::Session
         rescue Rumudge::Server::Interrupt => i
           # handle interrupts from the server
           Log.i(TAG, "Caught server interrupt in #{Thread.current}")
-          unless write(i.for_client)
+          unless self.write(i.for_client)
             Log.e(TAG, 'Failed to write server interrupt message to client')
           end
 
@@ -172,7 +172,6 @@ class Rumudge::Session
           # a read or a write failed; interpret as socket failure and shut down
           Log.e(TAG, "Client socket error for #{@remote_addr}")
           stop
-
         end
       end
 

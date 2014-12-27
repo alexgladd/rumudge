@@ -98,7 +98,7 @@ class Rumudge::Server
           sock = server.accept_nonblock
           Log.i(TAG, "New client connection from #{sock.peeraddr[-1]}")
 
-          # TODO use the new socket
+          # use the new socket in a new session
           session = Rumudge::Session.new(sock, Rumudge.environment.startup_ctrl, self)
           session.start
 

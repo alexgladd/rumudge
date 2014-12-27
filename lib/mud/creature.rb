@@ -19,9 +19,9 @@
 ##
 
 class Rumudge::Creature < Rumudge::Entity
-  DEFAULT_ABILITIES = { :str = 1, :dex = 1, :con = 1, :int = 1, :wis = 1, :cha = 1 }
-  DEFAULT_STATS = { :hp = 1 }
-  DEFAULT_OPTIONS = { :hitd = '1d6' }
+  DEFAULT_ABILITIES = { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 }
+  DEFAULT_STATS = { hp: 1 }
+  DEFAULT_OPTIONS = { hitd: nil }
 
   attr_reader :name
 
@@ -31,9 +31,24 @@ class Rumudge::Creature < Rumudge::Entity
 
     @name = name
 
-    @abilities = self.parse_options(DEFAULT_ABILITIES, options)
-    @stats = self.parse_options(DEFAULT_STATS, options)
-    @options = self.parse_options(DEFAULT_OPTIONS, options)
+    @abilities = parse_options(DEFAULT_ABILITIES, options)
+    @stats = parse_options(DEFAULT_STATS, options)
+    @options = parse_options(DEFAULT_OPTIONS, options)
+  end
+
+  # get an ability score
+  def ability_score(ability)
+    val = @abilities[ability]
+    if val.nil?
+      raise ArgumentError, "Unknown ability: #{ability.to_s}"
+    end
+
+    val
+  end
+
+  # get an ability modifier
+  def ability_mod(ability)
+    ((ability_score(ability) - 10.0) / 2.0).floor
   end
 
   # ability check

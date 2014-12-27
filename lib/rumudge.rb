@@ -27,7 +27,7 @@ require_relative 'ctrl/controller'
 require_relative 'ctrl/default_controller'
 require_relative 'sys/roll'
 require_relative 'mud/entity'
-# require_relative 'mud/creature'
+require_relative 'mud/creature'
 
 # init the startup controller
 Rumudge.environment.startup_ctrl = Rumudge::DefaultController

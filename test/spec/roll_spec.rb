@@ -2,9 +2,6 @@ require 'rspec'
 
 describe 'Roll' do
 
-  let(:roll_default) { Roll.new() }
-  let(:roll_1d20) { Roll.new(1, 20) }
-
   context 'when generating rolls' do
     it 'should default to 1d6' do
       100.times do

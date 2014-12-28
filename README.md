@@ -43,6 +43,14 @@ server.start
 
 For a more complete example, see the [test controller](test/test_controller.rb)
 
+## Running Specs
+
+RuMUDGE uses [rspec](http://rspec.info/) for a testing framework. To run all test cases:
+
+```shell
+$ rspec test/spec
+```
+
 ## License
 
 Copyright 2014 Alex Gladd

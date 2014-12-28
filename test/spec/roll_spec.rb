@@ -43,6 +43,12 @@ describe 'Roll' do
 
       expect(roll.num_rolls).to eql(4)
     end
+
+    it 'should record the correct dice size' do
+      roll = Roll.new(2, 10)
+
+      expect(roll.sides).to eql(10)
+    end
   end
 
   context 'when using the generate shortcut' do

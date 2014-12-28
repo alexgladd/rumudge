@@ -20,8 +20,8 @@
 
 class Rumudge::Creature < Rumudge::Entity
   DEFAULT_ABILITIES = { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 }
-  DEFAULT_STATS = { hp: 1, ac: 8 }
-  DEFAULT_OPTIONS = { hitd: nil }
+  DEFAULT_STATS = { hp: 1, ac: 1 }
+  DEFAULT_OPTIONS = { hitd: nil, attack_mod: :str }
 
   attr_reader :name
 
@@ -61,6 +61,11 @@ class Rumudge::Creature < Rumudge::Entity
   def ability_check(ability)
     mod = ability_mod(ability)
     Roll.generate('1d20').to_i + mod
+  end
+
+  # get the attack modifier
+  def attack_mod
+    ability_mod(@options[:attack_mod])
   end
 
   # get current hp

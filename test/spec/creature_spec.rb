@@ -23,7 +23,7 @@ describe 'Creature' do
   }
 
   let(:options_hitd) {
-    { str: 18, dex: 15, con: 13, int: 11, wis: 9, cha: 5, hitd: '2d8' }
+    { str: 18, dex: 15, con: 13, int: 11, wis: 9, cha: 5, hitd: '2d8', attack_mod: :dex }
   }
 
   let(:c_hp) { Rumudge::Creature.new(1, 'Test', options_hp) }
@@ -59,5 +59,9 @@ describe 'Creature' do
 
   it 'should parse the correct armor class' do
     expect(c_hp.ac).to eql(12)
+  end
+
+  it 'should parse the correct attack modifier' do
+    expect(c_hitd.attack_mod).to eql(2)
   end
 end

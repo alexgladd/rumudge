@@ -20,7 +20,7 @@
 
 class Rumudge::Creature < Rumudge::Entity
   DEFAULT_ABILITIES = { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 }
-  DEFAULT_STATS = { hp: 1 }
+  DEFAULT_STATS = { hp: 1, ac: 8 }
   DEFAULT_OPTIONS = { hitd: nil }
 
   attr_reader :name
@@ -34,6 +34,12 @@ class Rumudge::Creature < Rumudge::Entity
     @abilities = parse_options(DEFAULT_ABILITIES, options)
     @stats = parse_options(DEFAULT_STATS, options)
     @options = parse_options(DEFAULT_OPTIONS, options)
+
+    # set initial hp based on hit dice if we have it
+    unless @options[:hitd].nil?
+      r = Roll.generate(@options[:hitd])
+      @stats[:hp] = (r.sides * r.num_rolls) + ability_mod(:con)
+    end
   end
 
   # get an ability score
@@ -51,9 +57,20 @@ class Rumudge::Creature < Rumudge::Entity
     ((ability_score(ability) - 10.0) / 2.0).floor
   end
 
-  # ability check
+  # get an ability check
   def ability_check(ability)
-    
+    mod = ability_mod(ability)
+    Roll.generate('1d20').to_i + mod
+  end
+
+  # get current hp
+  def hp
+    @stats[:hp]
+  end
+
+  # get current armor class
+  def ac
+    @stats[:ac]
   end
 
   private
@@ -65,17 +82,5 @@ class Rumudge::Creature < Rumudge::Entity
     filtered = options.select { |key, v| filter.include? key }
     # merge and return results
     filter.merge(filtered)
-
-    # # try abilities
-    # ABILITY_NAMES.each do |ability|
-    #   if options.has_key? ability
-    #     @abilities[ability] = options[ability]
-    #   end
-    # end
-
-    # # stats
-    # if options.has_key? STAT_HP
-    #   @hp = options[STAT_HP]
-    # end
   end
 end

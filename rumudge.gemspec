@@ -10,4 +10,8 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/alexgladd/rumudge'
   s.license     = 'LGPL-3.0+'
   s.files       = Dir['lib/**/*.rb']
+
+  s.add_development_dependency 'rspec', '3.1.0'
+
+  s.add_runtime_dependency     'sqlite3', '1.3.10'
 end
